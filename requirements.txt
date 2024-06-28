@@ -1,0 +1,2 @@
+fastapi==0.111.0
+pyautogen[retrievechat,long-context]==0.2.29
