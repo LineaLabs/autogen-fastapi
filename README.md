@@ -3,6 +3,8 @@ This is an example FastAPI server that streams messages from the Autogen framewo
 
 ## Installation
 ```sh
+git clone https://github.com/LineaLabs/autogen-fastapi.git
+cd autogen-fastapi
 conda create -n autogen python=3.10
 conda activate autogen
 pip install -r requirements.txt
