@@ -20,7 +20,7 @@ empty_usage = {
 def serve_autogen(inp: Input):
     model_dump = inp.model_dump()
     model_messages = model_dump["messages"]
-    workflow = AutogenWorkflow()
+    workflow = AutogenWorkflow(model_dump["model"])
 
     if inp.stream:
         queue = Queue()
