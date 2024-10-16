@@ -14,11 +14,11 @@ docker compose up
 Navigate to http://localhost:8000/autogen to see the docs. 
 
 ## Call different agent groups with different model definitions
-We can define different agent groups for different purposes.
+We can define different agent groups for different purposes in a single json file (app/agent_configs.json).
 After defined, we can call the agent group with the there id as model parameter.
 For example we have a definition as follows:
-```python
-agent_configs = {
+```json
+{
   "article_writer": {
     "name": "ArticleWriter",
     # other parameters ...
