@@ -11,7 +11,7 @@ config_list = [{
   "price" : [0.004, 0.012]
 }]
 
-llm_config = {"config_list": config_list, "cache_seed": 42}
+llm_config = {"config_list": config_list, "cache_seed": 42, "timeout": 180}
 
 # 读取 JSON 文件，初始化agent_configs
 def load_agent(file_path):
@@ -22,7 +22,7 @@ def load_agent(file_path):
                 agent['llm_config'] = llm_config
     return agent_configs
 
-agent_configs = load_agent('agent_configs.json')
+agent_configs = load_agent('/app/app/agent_configs.json')
 
 models = {}
 
@@ -58,13 +58,12 @@ def build_agents(agent_id):
       human_input_mode="NEVER"
     ))
     for config in agent_configs[agent_id]["agents"]:
-      agents.append(
-          ConversableAgent(
+      _agent = ConversableAgent(
               name=config["name"],
               system_message=config["system_message"],
               human_input_mode=config["human_input_mode"],
               code_execution_config=config["code_execution_config"],
               llm_config=config["llm_config"],
           )
-      )
+      agents.append(_agent)
     return agents

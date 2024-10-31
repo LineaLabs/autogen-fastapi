@@ -3,6 +3,7 @@ services:
     build: .
     volumes:
       - ./:/app
+      - ~/.cache:/root/.cache
     environment:
       - AUTH_KEYS=YOUR_HTTP_AUTHORIZATION_KEYS_SEPARATED_BY_COMMA
       - LLM_MODEL=qwen-plus

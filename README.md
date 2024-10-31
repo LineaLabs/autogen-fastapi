@@ -31,12 +31,13 @@ curl -X 'POST' \
   'http://localhost:8000/autogen/api/v1/chat/completions' \
   -H 'accept: application/json' \
   -H 'Content-Type: application/json' \
+  -H 'Authorization: Bearer 976707f2ab39ebee343034b4b33db6f9' \
   -d '{
   "model": "article_writer",
   "messages": [
     {
       "role": "user",
-      "content": "写一篇向小学生介绍宋朝历史的文章，涵盖宋朝的建立、兴盛、衰落的过程，大约2000字。"
+      "content": "写一篇向小学生介绍明朝历史的文章，涵盖明朝的建立、兴盛、衰落的过程，大约3000字。"
     }
   ],
   "temperature": 1,

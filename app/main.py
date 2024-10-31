@@ -9,7 +9,7 @@ from autogen_agents import models
 
 load_dotenv()
 
-# 读取配置文件中的keys
+# 读取环境变量中的keys
 AUTH_KEYS = os.getenv("AUTH_KEYS").split(",")
 
 # 验证请求头中是否有正确的api_key
