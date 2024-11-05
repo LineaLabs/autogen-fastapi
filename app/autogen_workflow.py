@@ -10,6 +10,7 @@ from autogen import ChatResult, GroupChat, Agent, OpenAIWrapper, ConversableAgen
 from autogen.code_utils import content_str
 from autogen.io import IOStream
 from termcolor import colored
+from autogen_agents import build_agents, llm_config
 
 
 def streamed_print_received_message(
@@ -121,53 +122,16 @@ def streamed_print_received_message(
     )
 
 
-llm_config = {"model": "gpt-4", "api_key": os.environ["OPENAI_API_KEY"]}
-
-
 class AutogenWorkflow:
-    def __init__(self):
+    def __init__(self, agent_id: str):
         self.queue: Queue | None = None
-        self.user_proxy = UserProxyAgent(
-            name="UserProxy",
-            system_message="You are the UserProxy. You are the user in this conversation.",
-            human_input_mode="NEVER",
-            code_execution_config=False,
-            llm_config=llm_config,
-            description="The UserProxy is the user in this conversation. They will be interacting with the other agents in the group chat.",
-        )
-        self.mitch_hedberg = ConversableAgent(
-            name="MitchHedberg",
-            system_message="You are the comedian Mitch Hedberg. You are known for your surreal humor and deadpan delivery. Your comedy typically featured short, sometimes one-line jokes mixed with absurd elements and non sequitur",
-            max_consecutive_auto_reply=3,
-            human_input_mode="NEVER",
-            code_execution_config=False,
-            llm_config=llm_config,
-            default_auto_reply="I used to do drugs. I still do, but I used to, too.",
-            description="Mitch Hedberg was an American stand-up comedian known for his surreal humor and deadpan "
-                        "delivery. His comedy typically featured short, sometimes one-line jokes mixed with absurd "
-                        "elements and non sequiturs. Hedberg's comedy and onstage persona gained him a cult "
-                        "following, with audience members sometimes shouting out the punchlines to his jokes before "
-                        "he could finish them.",
-        )
-        self.greg_giraldo = ConversableAgent(
-            name="GregGiraldo",
-            system_message="You are the comedian Greg Giraldo. You are known for your acerbic style of humor and your appearances on Comedy Central's roasts. You are a former lawyer who turned to comedy full-time.",
-            max_consecutive_auto_reply=3,
-            human_input_mode="NEVER",
-            code_execution_config=False,
-            llm_config=llm_config,
-            default_auto_reply="I'm not a good person, but I would like to be better.",
-            description="Greg Giraldo was an American stand-up comedian, television personality, and lawyer. He is known for his acerbic style of humor and his appearances on Comedy Central's roasts. Giraldo was a former lawyer who turned to comedy full-time, and he was known for his sharp wit and biting commentary on a wide range of topics."
-        )
+
+        self.agents = build_agents(agent_id)
 
         self.group_chat_with_introductions = GroupChat(
-            agents=[
-                self.user_proxy,
-                self.mitch_hedberg,
-                self.greg_giraldo,
-            ],
+            agents=self.agents,
             messages=[],
-            max_round=10,
+            max_round=50,
             send_introductions=True,
         )
         self.group_chat_manager_with_intros = GroupChatManager(
@@ -209,8 +173,8 @@ class AutogenWorkflow:
                 streamed_print_received_message_with_queue_and_index,
                 self.group_chat_manager_with_intros,
             )
-
-        chat_history = self.user_proxy.initiate_chat(
+        # agents[0] is the user_proxy agent
+        chat_history = self.agents[0].initiate_chat(
             self.group_chat_manager_with_intros, message=message,
         )
         if stream:

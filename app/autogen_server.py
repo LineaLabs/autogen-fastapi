@@ -20,7 +20,7 @@ empty_usage = {
 def serve_autogen(inp: Input):
     model_dump = inp.model_dump()
     model_messages = model_dump["messages"]
-    workflow = AutogenWorkflow()
+    workflow = AutogenWorkflow(model_dump["model"])
 
     if inp.stream:
         queue = Queue()
@@ -59,7 +59,7 @@ def return_streaming_response(inp: Input, queue: Queue):
             usage=empty_usage,
             model=inp.model,
         )
-        yield f"data: {json.dumps(chunk.model_dump())}\n\n"
+        yield f"data: {json.dumps(chunk.model_dump(), ensure_ascii=False)}\n\n"
         queue.task_done()
 
 
